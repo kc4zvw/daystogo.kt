@@ -15,8 +15,15 @@
 // $Id: daystogo.tcl,v 0.6 2024/08/19 18:45:08 kc4zvw Exp kc4zvw $
 
 import java.io.File
+import java.text.SimpleDateFormat
+import java.time.*
+import java.time.format.*
+import java.time.format.DateTimeFormatter.*
+import java.time.format.DateTimeFormatterBuilder.*
+import java.util.Date
 import kotlin.math.abs
 import kotlin.math.truncate
+import kotlin.time.*
 
 
 // Setup global variables and constants
@@ -25,6 +32,10 @@ val calendar_file = ".calendar"
 val os_sep = "/"
 
 val Now: Long = 13				/* a epoch time from a long time ago */
+
+val unixTime = System.currentTimeMillis() / 1000
+val localDate: LocalDate = LocalDate.now();
+
 
 val spaces = "." 
 val event_date = spaces.repeat(20)				// # working register 1
@@ -48,9 +59,22 @@ fun date_to_secs( str : String ) : String {
 
 fun formattedDate( d : Long ) : String {
 	val my_date = ""
-	// val my_date = String.cat d.wday d.mon d.day d.year
 
-	return "$my_date"
+    var newdate = "2024-08-23T12:41:12";
+
+	val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+
+	//formatter.timeZone = TimeZone.getTimeZone("EDT")
+	val value = formatter.parse(newdate.toString())
+	val dateFormatter = SimpleDateFormat("EEEEE, MMMMM dd, yyyy 'at' hh:mma (z)") //this format changeable
+	//dateFormatter.timeZone = TimeZone.getDefault()
+	newdate = dateFormatter.format(value)
+
+//	} catch (e: Exception) {
+//		newdate = "00-00-0000 00:00"
+//	}
+
+	return "$newdate"
 }
 
 // ------------------------------
@@ -152,16 +176,11 @@ fun calc_dates( Date0: String ) : Int {
 
 fun display_banner() {
 
-	val Today = "$$$$$"
-
-	val fmt = "%A, %B %d, %y at %H:%M:%S (%Z)"
+	val Today = formattedDate(unixTime)
 	val textfmt = "  Today's date is $Today.\n"
+
 	val dash = "="
 	val dashes = dash.repeat(60)
-
-	// global Now
-
-	// val Today [clock format $Now -format $fmt]
 
 	println("Days To Go Calculator (Kotlin version)")
 	println()
