@@ -67,12 +67,11 @@ fun get_home_dir() : String {
 
 fun process_line( eventDate : String, eventName : String ) {
 
-	//global dayCount
-
-	val answer = "$eventDate" + ":" + "$eventName"
-	println( "Result: %s $answer\n" )
+	var answer = "$eventDate" + ":" + "$eventName"
+	println( "Result: $answer" )
 
 	val dayCount = calc_dates( eventDate )
+	var daycount = -4
 	output_display( eventName )
 }
 
@@ -82,8 +81,8 @@ fun output_display( event_name: String ) {
 	val eventName: String = "$corrected"
 	val absolute_value: Int = abs(dayCount)
 
-	println("The count is $dayCount")
-	println("The name is $eventName")
+	// println("The count is $dayCount")
+	// println("The name is $eventName")
 	
 	if ( dayCount <= -2 ) {
 		val format = "It was $absolute_value days ago since $eventName."
@@ -127,19 +126,19 @@ fun calc_dates( Date0: String ) : Int {
 
 	//global Now
 
-	println("Received: $Date0")
-	//val Tgt = String.range( $Date0, 2, end - 1)
+	// println("Received: $Date0")
+	// val Tgt = String.range( $Date0, 2, end - 1)
 	var Tgt: String = "yyyy/mm/dd"
-	println("Changed to: $Tgt")
+	// println("Changed to: $Tgt")
 
 	//val Target1 [clock scan $Tgt -format $fmt3]
 	//val Today [clock format $Now -format $fmt1]
 	val Target1: Long = 0
 	val Today: Long = 1
 
-	println( "var Now is $Now")
-	println( "var Today is $Today")
-	println( "var Target is $Target1")
+	// println( "var Now is $Now")
+	// println( "var Today is $Today")
+	// println( "var Target is $Target1")
 
 	val numDays1: Long  = Today / 86400
 	val numDays2: Long  = Target1 / 86400
@@ -179,7 +178,7 @@ fun build_path_name() : String {
 	val path_name = "$myhome$os_sep$calendar_file"
 	val fmt = "Filename: $path_name"
 
-	println( "$fmt" )
+	println( "$fmt\n" )
 
 	return "$path_name"
 }
@@ -223,38 +222,23 @@ fun first_loop() {
 
 	val fileName = build_path_name()
 
-	val List2 :String = ""
-	val List3 = :List<String> 
-	val file = File("alpha.txt")
+	var List3 = readFileAsLinesUsingReadLines(fileName)
 
-	List3 = readFileAsLinesUsingReadLines(fileName)
+	// println (List3)
 
-	//while {1} {
+	for (line in List3) {
+		// println("Read line: $line")
+	
+		var part1 = line.substring( 0, 10 )
+		var part2 = line.substring( 11 )
 
-	for (x in List3) {
-		println (x)
+		// println("part1=$part1 : part2=$part2")
 
+		process_line(part1, part2)
 	}
-
-	//	println("Read line: $line")
-
-	//	val part1 = String.range( $line, 0, 9)
-	//	val part2 = String.range( $line, 11, end)
-
-	//	println("part1: $part1")
-	//	println("part2: $part2")
-
-	//	val event_date = $part1
-	//	val event_name = $part2
-
-		// process the line
-	//	process_line($part1, $part2)
-	// }
-
 }
 
 fun search_for_comments() {
-
 	//	let ((m (string-match "^[ \t]*#" line)))
 	//	if m (format #t "comment: ~a\n" line)))
 }
