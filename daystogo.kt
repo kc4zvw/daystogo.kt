@@ -6,13 +6,14 @@
 // ***   Author: David Billsbrough 
 // ***  Created: Sunday, August 18, 2024 at 18:22:44 PM (EDT)
 // ***  License: GNU General Public License -- version 2
-// ***  Version: $Revision: 0.6 $
+// ***  Version: $Revision: 0.42 $
 // *** Warranty: None
+// ***
 // ***  Purpose: Calculate the difference in days between two dates
 // ***
 // ******************************************************************  
 
-// $Id: daystogo.tcl,v 0.6 2024/08/19 18:45:08 kc4zvw Exp kc4zvw $
+// $Id: daystogo.kt,v 0.42 2024/08/24 00:48:27 kc4zvw Exp kc4zvw $
 
 import java.io.File
 import java.text.SimpleDateFormat
@@ -36,7 +37,6 @@ val Now: Long = 13				/* a epoch time from a long time ago */
 val unixTime = System.currentTimeMillis() / 1000
 val localDate: LocalDate = LocalDate.now();
 
-
 val spaces = "." 
 val event_date = spaces.repeat(20)				// # working register 1
 val event_name = spaces.repeat(60)				// # working register 2
@@ -58,10 +58,8 @@ fun date_to_secs( str : String ) : String {
 }
 
 fun formattedDate( d : Long ) : String {
-	val my_date = ""
 
-    var newdate = "2024-08-23T12:41:12";
-
+	var newdate = "2024-08-23T12:41:12";
 	val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 
 	//formatter.timeZone = TimeZone.getTimeZone("EDT")
@@ -70,14 +68,12 @@ fun formattedDate( d : Long ) : String {
 	//dateFormatter.timeZone = TimeZone.getDefault()
 	newdate = dateFormatter.format(value)
 
-//	} catch (e: Exception) {
-//		newdate = "00-00-0000 00:00"
-//	}
-
 	return "$newdate"
 }
 
 // ------------------------------
+
+//  Notes: ((getenv "HOME") or "/home/kc4zvw")
 
 fun get_home_dir() : String {
 
@@ -92,14 +88,14 @@ fun get_home_dir() : String {
 fun process_line( eventDate : String, eventName : String ) {
 
 	var answer = "$eventDate" + ":" + "$eventName"
-	println( "Result: $answer" )
+	// println( "Result: $answer" )
 
-	val dayCount = calc_dates( eventDate )
-	var daycount = -4
-	output_display( eventName )
+	var dayCount = calc_dates( eventDate )
+
+	output_display( dayCount, eventName )
 }
 
-fun output_display( event_name: String ) {
+fun output_display( dayCount: Int, event_name: String ) {
 
 	val corrected: String = "$event_name"
 	val eventName: String = "$corrected"
@@ -129,11 +125,9 @@ fun output_display( event_name: String ) {
 	}
 }
 
-
 // ------------------------------
 
 //  set Zone eval (0500 +1)			#-- not used now
-
 
 fun diff ( num1: Int, num2: Int ) : Int {
 
@@ -144,30 +138,23 @@ fun diff ( num1: Int, num2: Int ) : Int {
 
 fun calc_dates( Date0: String ) : Int {
 
-	val fmt1 = "%s"
-	val fmt2 = "%D"
-	val fmt3 = "%Y/%m/%d"
-
-	//global Now
-
-	// println("Received: $Date0")
-	// val Tgt = String.range( $Date0, 2, end - 1)
 	var Tgt: String = "yyyy/mm/dd"
-	// println("Changed to: $Tgt")
 
-	//val Target1 [clock scan $Tgt -format $fmt3]
-	//val Today [clock format $Now -format $fmt1]
-	val Target1: Long = 0
-	val Today: Long = 1
+	val dateString: String = "$Date0"
+	val df: SimpleDateFormat = SimpleDateFormat("yyyy/MM/dd");
+	// df.setTimeZone(TimeZone.getTimeZone("UTC"))
+	val date: Date = df.parse(dateString)
+	val time: Long = date.getTime()
+	val target: Long = time / 1000
 
-	// println( "var Now is $Now")
-	// println( "var Today is $Today")
-	// println( "var Target is $Target1")
+	val Target1: Long = target
+	val Today: Long = unixTime
 
 	val numDays1: Long  = Today / 86400
 	val numDays2: Long  = Target1 / 86400
-	//val deltaDays: Int = (numDays2.toInt - numDays1.toInt)
-	val deltaDays: Int = -3
+	val diff: Long = (numDays2 - numDays1)
+	// println( "the difference is $diff" )
+	val deltaDays: Int = diff.toInt()
 
 	return deltaDays
 }
@@ -202,37 +189,33 @@ fun build_path_name() : String {
 	return "$path_name"
 }
 
-//  Notes: ((getenv "HOME") or "/home/kc4zvw") sep ".calendar"))
 
 fun set_epoch_time(): Long {
 
-	//global Now
-
-	//val Now [clock seconds]
-	return 999999
+	return 999999		// defined as a global for now (see above)
 }
 
-// Open text file for reading
+/* Open text file for reading */
 
 fun withOpenFile( filename: String, channelVar: Int, script: String ) {
 
 	//upvar 1 $channelVar chan
 	//val chan [open $filename]
 	//catch {
-        //uplevel 1 $script
-	// } result options
+	//  uplevel 1 $script
+	//} result options
 	//close $chan
 	//return -options $options $result
 }
 
-// ##  Notes:  set infile [open $calendarFile {RDONLY EXCL}] 
-// #			println(format ["Couldn't open %s for reading dates.\n"] calendar-file
-// #			exit 2 
+//  Notes:  set infile [open $calendarFile {RDONLY EXCL}] 
+// 			println("Couldn't open $calendar-file for reading dates.\n")
+// 			exit 2 
 
 
 // --------------------- 
 
-//  do main loop though the calendar file
+/* do main loop though the calendar file */
 
 fun readFileAsLinesUsingReadLines(fileName: String): List<String> 
 	= File(fileName).readLines()
@@ -240,17 +223,12 @@ fun readFileAsLinesUsingReadLines(fileName: String): List<String>
 fun first_loop() {
 
 	val fileName = build_path_name()
-
 	var List3 = readFileAsLinesUsingReadLines(fileName)
-
-	// println (List3)
 
 	for (line in List3) {
 		// println("Read line: $line")
-	
 		var part1 = line.substring( 0, 10 )
 		var part2 = line.substring( 11 )
-
 		// println("part1=$part1 : part2=$part2")
 
 		process_line(part1, part2)
@@ -258,8 +236,10 @@ fun first_loop() {
 }
 
 fun search_for_comments() {
-	//	let ((m (string-match "^[ \t]*#" line)))
-	//	if m (format #t "comment: ~a\n" line)))
+
+	/* will write this part later! */
+
+	// if a text line starts with a "#" it is a comment to be skipped over.
 }
 
 fun main_routine() {

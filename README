@@ -1,0 +1,22 @@
+#
+#  README
+#
+
+If there were some real docs they would be mentioned here ...
+
+How to 'compile' from the source files:
+
+  kotlinc daystogo.kt -verbose -include-runtime -d daystogo.jar
+  java -jar daystogo.jar
+
+  kotlinc testing1.kt -include-runtime -d testing1.jar
+  java -jar test001.jar
+
+  kotlinc testing2.kt -include-runtime -d testing2.jar
+  java -jar testing2.jar
+
+Hint: sort of like ... that Dudley
+
+-db
+----
+Revised: Friday, August 23, 2024 at 21:08:48 PM (EDT)
